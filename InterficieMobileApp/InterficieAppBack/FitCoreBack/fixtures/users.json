@@ -1,0 +1,62 @@
+[
+    {
+      "model": "FitCoreBack.customuser",
+      "pk": 1,
+      "fields": {
+        "password": "pbkdf2_sha256$260000$...", 
+        "username": "entrenador1",
+        "name": "Carlos",
+        "surname": "Gómez",
+        "dni": "11111111A",
+        "role": "entrenador",
+        "staff": true,
+        "phone": "600111111",
+        "email": "entrenador1@gym.com"
+      }
+    },
+    {
+      "model": "FitCoreBack.customuser",
+      "pk": 2,
+      "fields": {
+        "password": "pbkdf2_sha256$260000$...",
+        "username": "entrenador2",
+        "name": "Ana",
+        "surname": "López",
+        "dni": "22222222B",
+        "role": "entrenador",
+        "staff": true,
+        "phone": "600222222",
+        "email": "entrenador2@gym.com"
+      }
+    },
+    {
+      "model": "FitCoreBack.customuser",
+      "pk": 3,
+      "fields": {
+        "password": "<hash_generado>",
+        "username": "nutricionista1",
+        "name": "María",
+        "surname": "Ruiz",
+        "dni": "33333333C",
+        "role": "nutricionista",
+        "staff": true,
+        "phone": "600333333",
+        "email": "nutri1@gym.com"
+      }
+    },
+    {
+      "model": "FitCoreBack.customuser",
+      "pk": 4,
+      "fields": {
+        "password": "pbkdf2_sha256$260000$...",
+        "username": "nutricionista2",
+        "name": "Javier",
+        "surname": "Martínez",
+        "dni": "44444444D",
+        "role": "nutricionista",
+        "staff": true,
+        "phone": "600444444",
+        "email": "nutri2@gym.com"
+      }
+    }
+  ]
