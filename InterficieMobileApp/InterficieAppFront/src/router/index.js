@@ -16,23 +16,17 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
   // Añadir el guardia de navegación aquí
   Router.beforeEach((to, from, next) => {
-    const authStore = useAuthStore()
-    const publicPages = ['/login']
-    const authRequired = !publicPages.includes(to.path)
-
-    // Si la ruta requiere autenticación y no hay usuario logueado
-    if (authRequired && !authStore.user) {
-      authStore.returnUrl = to.fullPath
-      next('/login')
+    const authStore = useAuthStore();
+    
+    if (to.path === '/login' && authStore.user) {
+      // Redirigir según tipo de usuario
+      authStore.user.isStaff 
+        ? next('/staff-dashboard')
+        : next('/client-dashboard');
     } else {
-      // Si está logueado y trata de acceder al login, redirigir a dashboard
-      if (to.path === '/login' && authStore.user) {
-        next(authStore.user.role === 'cliente' ? '/cliente' : '/staff')
-      } else {
-        next()
-      }
+      next();
     }
-  })
+  });
 
   return Router
 })

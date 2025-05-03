@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'role', 'entrenador', 'nutricionista']
+        fields = ['id', 'username', 'surname', 'name', 'staff', 'email', 'role', 'entrenador', 'nutricionista']
         extra_kwargs = {'password': {'write_only': True}}
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -18,14 +18,14 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 class SecureTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        # Deja que el padre haga la validación de credenciales
         data = super().validate(attrs)
-        
-        # Añade campos personalizados al token
         data.update({
+            'user_id': self.user.id,
+            'username': self.user.username,
+            'name': self.user.name,
+            'surname': self.user.surname,
             'role': self.user.role,
-            'is_staff': self.user.is_staff,
-            'user_id': self.user.id
+            'is_staff': self.user.staff
         })
         return data
 
@@ -34,5 +34,5 @@ class SecureTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         # Campos que viajarán en el JWT
         token['role'] = user.role
-        token['is_staff'] = user.is_staff
+        token['is_staff'] = user.staff
         return token

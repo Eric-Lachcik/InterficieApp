@@ -1,12 +1,23 @@
-import AuthLogin from 'pages/AuthLogin.vue'
-import ClienteDashboard from 'pages/ClienteDashboard.vue'
-import StaffDashboard from 'pages/StaffDashboard.vue'
 
 const routes = [
-  { path: '/login', component: AuthLogin },
-  { path: '/cliente', component: ClienteDashboard },
-  { path: '/staff', component: StaffDashboard },
-  { path: '/', redirect: '/login' }
+  { 
+    path: '/', 
+    redirect: '/login'  // Redirige a login si no hay ruta
+  },
+  { 
+    path: '/login', 
+    component: () => import('pages/AuthLogin.vue') 
+  },
+  { 
+    path: '/staff-dashboard', 
+    component: () => import('pages/StaffDashboard.vue'),
+    meta: { requiresStaff: true }
+  },
+  { 
+    path: '/client-dashboard', 
+    component: () => import('pages/ClientDashboard.vue'),
+    meta: { requiresClient: true }
+  },
 ]
 
 export default routes

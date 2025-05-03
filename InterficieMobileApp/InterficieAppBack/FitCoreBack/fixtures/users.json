@@ -3,7 +3,7 @@
       "model": "FitCoreBack.customuser",
       "pk": 1,
       "fields": {
-        "password": "pbkdf2_sha256$260000$...", 
+        "password": "pbkdf2_sha256$1000000$gPpgGAFpABKcdlvqYfd8OC$7KULn6agquWwWs28HbLRj3geUQ12xxLwFsEpGTaUrsE=", 
         "username": "entrenador1",
         "name": "Carlos",
         "surname": "Gómez",
@@ -18,7 +18,7 @@
       "model": "FitCoreBack.customuser",
       "pk": 2,
       "fields": {
-        "password": "pbkdf2_sha256$260000$...",
+        "password": "pbkdf2_sha256$1000000$gPpgGAFpABKcdlvqYfd8OC$7KULn6agquWwWs28HbLRj3geUQ12xxLwFsEpGTaUrsE=",
         "username": "entrenador2",
         "name": "Ana",
         "surname": "López",
@@ -33,7 +33,7 @@
       "model": "FitCoreBack.customuser",
       "pk": 3,
       "fields": {
-        "password": "<hash_generado>",
+        "password": "pbkdf2_sha256$1000000$gPpgGAFpABKcdlvqYfd8OC$7KULn6agquWwWs28HbLRj3geUQ12xxLwFsEpGTaUrsE=",
         "username": "nutricionista1",
         "name": "María",
         "surname": "Ruiz",
@@ -48,7 +48,7 @@
       "model": "FitCoreBack.customuser",
       "pk": 4,
       "fields": {
-        "password": "pbkdf2_sha256$260000$...",
+        "password": "pbkdf2_sha256$1000000$gPpgGAFpABKcdlvqYfd8OC$7KULn6agquWwWs28HbLRj3geUQ12xxLwFsEpGTaUrsE=",
         "username": "nutricionista2",
         "name": "Javier",
         "surname": "Martínez",
@@ -57,6 +57,21 @@
         "staff": true,
         "phone": "600444444",
         "email": "nutri2@gym.com"
+      }
+    },
+    {
+      "model": "FitCoreBack.customuser",
+      "pk": 5,
+      "fields": {
+        "password": "pbkdf2_sha256$1000000$gPpgGAFpABKcdlvqYfd8OC$7KULn6agquWwWs28HbLRj3geUQ12xxLwFsEpGTaUrsE=", 
+        "username": "cliente",
+        "name": "Pedritos",
+        "surname": "Garcia",
+        "dni": "X8151170",
+        "role": "cliente",
+        "staff": false,
+        "phone": "657112372",
+        "email": "cliente@gym.com"
       }
     }
   ]

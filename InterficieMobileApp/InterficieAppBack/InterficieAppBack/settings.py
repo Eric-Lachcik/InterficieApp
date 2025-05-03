@@ -76,8 +76,16 @@ WSGI_APPLICATION = 'InterficieAppBack.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'gymdb',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '3307',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES', default_storage_engine=INNODB",
+            'charset': 'utf8mb4',
+        },
     }
 }
 
@@ -135,7 +143,9 @@ MIDDLEWARE.insert(2, 'corsheaders.middleware.CorsMiddleware')
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
-    "capacitor://localhost"
+    "capacitor://localhost",
+    "http://192.168.1.100:8080",
+    "http://localhost:9000",
 ]
 
 AUTH_USER_MODEL = 'FitCoreBack.CustomUser'
