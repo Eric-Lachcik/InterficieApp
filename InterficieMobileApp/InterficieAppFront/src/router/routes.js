@@ -18,6 +18,10 @@ const routes = [
     component: () => import('pages/ClientDashboard.vue'),
     meta: { requiresClient: true }
   },
+  { 
+    path: '/register', 
+    component: () => import('pages/RegisterPage.vue'),
+  },
 ]
 
 export default routes

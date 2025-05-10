@@ -66,7 +66,7 @@ class CustomUser(AbstractUser):
     def set_password(self, raw_password):
         # Hashing doble: SHA-256 + PBKDF2
         intermediate_hash = self._sha256_hash(raw_password)
-        super().set_password(intermediate_hash)
+        super().set_password(intermediate_hash) # Django aplica PBKDF2 aquí
 
     def _sha256_hash(self, password):
         import hashlib

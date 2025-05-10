@@ -4,7 +4,7 @@
       <!-- Logo y título -->
       <div class="text-center q-mb-xl">
         <img 
-          src="FITCOREV2.PNG" 
+          src="FITCOREV2.2.png" 
           class="login-logo q-mb-md"
           alt="FITCORE Logo"
         />
@@ -99,10 +99,10 @@ const handleLogin = async () => {
 .login-content {
   width: 100%;
   max-width: 500px; /* Tarjeta más ancha */
-  background: white;
+  background: #F0EEF8;
   border-radius: 15px;
   padding: 40px; /* Más padding interno */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
 }
 
 .login-logo {
