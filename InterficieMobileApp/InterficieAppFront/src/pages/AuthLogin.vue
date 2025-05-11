@@ -71,6 +71,7 @@ const authStore = useAuthStore()
 const username = ref('')
 const password = ref('')
 
+ // Asegúrate de que el usuario esté desconectado al cargar la página
 const handleLogin = async () => {
   try {
     await authStore.login({

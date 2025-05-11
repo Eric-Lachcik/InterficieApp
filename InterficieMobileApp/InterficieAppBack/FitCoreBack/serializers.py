@@ -21,8 +21,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['name', 'surname', 'dni', 'phone', 'address', 'population', 'username',
-                   'password', 'weight', 'role', 'muscle_mass',
-                     'stature', 'email', 'fecha_registro', 'staff', 'entrenador', 'nutricionista']
+                   'password','email', 'weight', 'muscle_mass',
+                     'stature', 'fecha_registro', 'staff','role',  'entrenador', 'nutricionista']
         extra_kwargs = {'password': {'write_only': True}}
 
 
@@ -59,7 +59,11 @@ class SecureTokenObtainPairSerializer(TokenObtainPairSerializer):
             'name': self.user.name,
             'surname': self.user.surname,
             'role': self.user.role,
-            'is_staff': self.user.staff
+            'is_staff': self.user.staff,
+            'email': self.user.email,
+            'phone': self.user.phone,
+            'dni': self.user.dni,
+            'address': self.user.address,
         })
         return data
 
