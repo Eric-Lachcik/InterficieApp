@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Interficie App</string>
-    <string name="title_activity_main">Interficie App</string>
-    <string name="package_name">com.tudominio.interficieapp</string>
-    <string name="custom_url_scheme">com.tudominio.interficieapp</string>
-</resources>
