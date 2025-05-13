@@ -4,6 +4,7 @@
     <h2>Bienvenido {{ authStore.user.name }} {{ authStore.user.surname }}</h2>
     
   </div>
+  <button @click="authStore.logout">Logout</button>
 </template>
 
 

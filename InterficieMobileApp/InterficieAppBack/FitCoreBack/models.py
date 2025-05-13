@@ -63,6 +63,7 @@ class CustomUser(AbstractUser):
         related_query_name="customuser",
     )
 
+    # Primer requisito de Robert
     def set_password(self, raw_password):
         # Hashing doble: SHA-256 + PBKDF2
         intermediate_hash = self._sha256_hash(raw_password)
