@@ -111,19 +111,6 @@ const handleLogin = async () => {
   max-width: 80%; /* Logo más ancho */
 }
 
-.login-title {
-  font-size: 2rem; /* Texto más grande */
-  font-weight: 700;
-  color: #2A5C8D;
-  margin: 15px 0 8px; /* Más espacio */
-}
-
-.login-subtitle {
-  color: #757575;
-  font-size: 1rem; /* Texto más grande */
-  margin: 0 0 30px;
-}
-
 .login-button {
   width: 100%;
   padding: 15px;
