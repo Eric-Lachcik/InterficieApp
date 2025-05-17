@@ -24,7 +24,7 @@ const routes = [
   },
   { 
     path: '/ClientSearch', 
-    component: () => import('pages/ClientSearch.vue'),
+    component: () => import('src/pages/StaffSearch.vue'),
   },
 ]
 

@@ -2,6 +2,7 @@
   <div class="client-search">
     <div class="client-search-container">
         <div class="profile-container">
+            <go-back-button />
             <profile-component />
         </div>
         <div class="logo-wrapper">
@@ -41,6 +42,7 @@
 </template>
 
 <script setup>
+import GoBackButton from 'src/components/GoBackButton.vue'
 import ProfileComponent from 'src/components/ProfileComponent.vue'
 import { ref, onMounted, computed } from 'vue'
 import { api } from 'boot/axios'
@@ -88,7 +90,7 @@ const filteredClients = computed(() => {
 .profile-container{
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 .client-search-container {
   padding: 20px;
