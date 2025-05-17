@@ -30,6 +30,10 @@ class UserSerializer(serializers.ModelSerializer):
         # Remover campos que ya tienen valor por defecto
         validated_data.pop('role', None)  # Eliminar si existe
         validated_data.pop('staff', None)  # Eliminar si existe
+
+        entrenador_id = validated_data.pop('entrenador', None)
+        nutricionista_id = validated_data.pop('nutricionista', None)
+
         # 1. Extraer la contraseña ANTES de crear el usuario
         raw_password = validated_data.pop('password')
         
@@ -39,6 +43,12 @@ class UserSerializer(serializers.ModelSerializer):
             role='cliente',  # Forzar rol de cliente
             staff=False      # Asegurar que no es staff
         )
+
+        # Asignar relaciones
+        if entrenador_id:
+            user.entrenador_id = entrenador_id
+        if nutricionista_id:
+            user.nutricionista_id = nutricionista_id
         
         # 3. Aplicar el doble hashing personalizado
         user.set_password(raw_password)

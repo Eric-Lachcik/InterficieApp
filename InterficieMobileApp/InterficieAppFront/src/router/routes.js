@@ -22,6 +22,10 @@ const routes = [
     path: '/register', 
     component: () => import('pages/RegisterPage.vue'),
   },
+  { 
+    path: '/ClientSearch', 
+    component: () => import('pages/ClientSearch.vue'),
+  },
 ]
 
 export default routes

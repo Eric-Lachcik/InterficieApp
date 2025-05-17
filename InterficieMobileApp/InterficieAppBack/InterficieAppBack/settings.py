@@ -168,16 +168,45 @@ INSTALLED_APPS += ['corsheaders']
 
 MIDDLEWARE.insert(2, 'corsheaders.middleware.CorsMiddleware')
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "capacitor://localhost",
-    "http://192.168.1.100:8080",
-    "http://localhost:9000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8080",
+#     "capacitor://localhost",
+#     "http://192.168.1.100:8080",
+#     "http://localhost:9000",
+#     "http://127.0.0.1:9000",
+# ]
+
+# CORS_ALLOW_HEADERS = [
+#     'accept',
+#     'accept-encoding',
+#     'authorization',
+#     'content-type',
+#     'dnt',
+#     'origin',
+#     'user-agent',
+#     'x-csrftoken',
+#     'x-requested-with',
+#     'x-user-id',       # Añade estos dos encabezados personalizados
+#     'x-user-role',
+# ]
+
+# CORS_EXPOSE_HEADERS = [
+#     'x-user-id',
+#     'x-user-role',
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = '*' 
+CORS_EXPOSE_HEADERS = '*'
+
+CORS_ALLOW_CREDENTIALS = True
 
 AUTH_USER_MODEL = 'FitCoreBack.CustomUser'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],

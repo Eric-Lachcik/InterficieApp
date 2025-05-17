@@ -24,15 +24,7 @@ class TrainerListView(generics.ListAPIView):
 class NutritionistListView(generics.ListAPIView):
     serializer_class = ProfessionalSerializer
     queryset = CustomUser.objects.filter(role='nutricionista')
-        
-# class UserDetailView(APIView):
-    # def get(self, request):
-    #     try:
-    #         user = CustomUser.objects.get(pk=request.data)
-    #         serializer = UserSerializer(user)
-    #         return Response(serializer.data)
-    #     except CustomUser.DoesNotExist:
-    #         return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
 class UserDetailView(generics.RetrieveAPIView):  # Solo para obtener datos
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
@@ -42,3 +34,52 @@ class UserDetailView(generics.RetrieveAPIView):  # Solo para obtener datos
             return CustomUser.objects.get(pk=self.kwargs['pk'])
         except CustomUser.DoesNotExist:
             raise Http404
+        
+class MyClientsView(APIView):
+    def get(self, request):
+        try:
+            # Obtener parámetros del header
+            user_id = request.META.get('HTTP_X_USER_ID')
+            user_role = request.META.get('HTTP_X_USER_ROLE')
+            print("User ID:", user_id)
+            print("User Role:", user_role)
+            if not user_id or not user_role:
+                return Response(
+                    {'error': 'Faltan headers requeridos'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Verificar existencia del usuario
+            user = CustomUser.objects.get(id=user_id)
+            
+            # Validar rol
+            if user.role != user_role:
+                return Response(
+                    {'error': 'Rol no coincide con el usuario'}, 
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            # Obtener clientes según el rol
+            if user_role == 'entrenador':
+                clients = user.clientes_asignados.all()
+            elif user_role == 'nutricionista':
+                clients = user.pacientes_asignados.all()
+            else:
+                return Response(
+                    {'error': 'Rol no válido'}, 
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            serializer = ProfessionalSerializer(clients, many=True)
+            return Response(serializer.data)
+            
+        except CustomUser.DoesNotExist:
+            return Response(
+                {'error': 'Usuario no encontrado'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {'error': str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

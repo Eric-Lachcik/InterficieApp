@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView
 from FitCoreBack.serializers import SecureTokenObtainPairSerializer 
-from FitCoreBack.views import RegisterView, TrainerListView, NutritionistListView, UserDetailView
+from FitCoreBack.views import RegisterView, TrainerListView, NutritionistListView, UserDetailView, MyClientsView
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = SecureTokenObtainPairSerializer
@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/trainers/', TrainerListView.as_view(), name='trainers-list'),
     path('api/nutritionists/', NutritionistListView.as_view(), name='nutritionists-list'),
     path('api/users/<str:pk>/' , UserDetailView.as_view()),  
+    path('api/my-clients/', MyClientsView.as_view(), name='my-clients'),
 ]

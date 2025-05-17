@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
           address: response.data.address,
         };
         localStorage.setItem('user', JSON.stringify(this.user));
-        console.log(this.user)
+        console.log("User",this.user)
         // Redirección basada en staff
         if (this.user.isStaff) {
           this.router.push('/staff-dashboard');

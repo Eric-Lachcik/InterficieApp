@@ -295,7 +295,10 @@ const handleRegister = async () => {
 
     const payload = {
       ...formData.value,
-      staff: false
+      staff: false,
+      // Asegurar que solo enviamos los IDs
+      entrenador: formData.value.entrenador?.id || formData.value.entrenador,
+      nutricionista: formData.value.nutricionista?.id || formData.value.nutricionista
     }
 
     await api.post('/api/auth/register/', payload)

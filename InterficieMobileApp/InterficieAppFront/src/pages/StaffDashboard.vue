@@ -36,20 +36,17 @@
 
 <script setup>
 import ProfileComponent from 'src/components/ProfileComponent.vue';
+import { useAuthStore } from 'stores/auth'
+import { onMounted } from 'vue'
+const authStore = useAuthStore()
 
-// import { useAuthStore } from 'stores/auth'
-// import { useRouter } from 'vue-router'
-
-// const router = useRouter()
-// const authStore = useAuthStore()
-
-// Opcional: Cargar usuario desde localStorage al montar el componente
-// onMounted(() => {
-//   const savedUser = localStorage.getItem('user')
-//   if (savedUser) {
-//     authStore.user = JSON.parse(savedUser)
-//   }
-// })
+onMounted(async () => {
+  // Si ya tenemos user pero no los detalles
+  if (authStore.user && !authStore.userDetails) {
+    await authStore.fetchUserDetails(authStore.user.id)
+    console.log('userDetails', authStore.userDetails)
+  }
+})
 </script>
 <style scoped>
 .staff-dashboard {
