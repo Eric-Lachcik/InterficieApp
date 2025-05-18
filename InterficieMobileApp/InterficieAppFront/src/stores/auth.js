@@ -3,11 +3,12 @@ import { api } from 'boot/axios'
 
 
 export const useAuthStore = defineStore('auth', {
-  actions: {
-    state: () => ({
+  state: () => ({
       user: JSON.parse(localStorage.getItem('user') || null), // Estado para el usuario
       userDetails: JSON.parse(localStorage.getItem('userDetails') || null)// Nuevo estado para datos adicionales
-    }),
+  }),
+  
+  actions: {
     async login(credentials) {
       try {
         const response = await api.post('/api/auth/login/', credentials);

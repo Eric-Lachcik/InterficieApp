@@ -44,7 +44,6 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from 'stores/auth'
 
 
-
 const router = useRouter()
 const authStore = useAuthStore()
 const menuOpen = ref(false)
@@ -62,10 +61,9 @@ const closeMenu = () => {
   }
 }
 
-
 // Color del icono según el tipo de usuario
 const userIconColor = computed(() => {
-  return authStore.isStaff ? 'bg-indigo-4 text-white' : 'bg-blue-4 text-white'
+  return authStore.user.isStaff ? 'bg-indigo-4 text-white' : 'bg-blue-4 text-white'
 })
 
 const goToProfile = () => {

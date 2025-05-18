@@ -39,7 +39,8 @@ import ProfileComponent from 'src/components/ProfileComponent.vue';
 import { useAuthStore } from 'stores/auth'
 import { onMounted } from 'vue'
 const authStore = useAuthStore()
-
+console.log('user', authStore.user)
+console.log('userDetails', authStore.userDetails)
 onMounted(async () => {
   // Si ya tenemos user pero no los detalles
   if (authStore.user && !authStore.userDetails) {
