@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password, check_password
-
+import os
 class CustomUser(AbstractUser):
     ROLES = (
         ('cliente', 'Cliente'),
@@ -89,3 +89,20 @@ class Appointment(models.Model):
     datetime = models.DateTimeField()
     professional = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='appointments')
     class_type = models.CharField(max_length=20, null=True, blank=True)  # Para clases dirigidas (RF1.1)
+
+class ClientReport(models.Model):
+    client = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='client_reports'
+    )
+    uploaded_by = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='uploaded_reports'
+    )
+    file = models.FileField(upload_to='client_reports/%Y/%m/%d/')
+    upload_date = models.DateTimeField(auto_now_add=True)
+
+    def filename(self):
+        return os.path.basename(self.file.name)

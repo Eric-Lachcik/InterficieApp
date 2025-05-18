@@ -2,7 +2,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
-from .models import CustomUser, Appointment  
+from .models import CustomUser, Appointment , ClientReport
 from django.core.exceptions import ValidationError
 
 class UserSerializer(serializers.ModelSerializer):
@@ -89,3 +89,19 @@ class ProfessionalSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'name', 'surname', 'email', 'phone']
+
+
+class ClientReportSerializer(serializers.ModelSerializer):
+    file_name = serializers.SerializerMethodField()
+    uploaded_by = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.all(),
+        write_only=True  # Para que no se muestre en las respuestas
+    )
+    
+    class Meta:
+        model = ClientReport
+        fields = '__all__'
+        read_only_fields = ('upload_date',)
+
+    def get_file_name(self, obj):
+        return obj.filename()

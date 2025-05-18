@@ -1,10 +1,13 @@
 from rest_framework.views import APIView
+from rest_framework import viewsets
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserSerializer, ProfessionalSerializer
+from .serializers import UserSerializer, ProfessionalSerializer, ClientReportSerializer
 from rest_framework import generics
-from .models import CustomUser
+from .models import CustomUser, ClientReport
 from django.http import Http404
+from rest_framework.exceptions import ValidationError
 
 class RegisterView(APIView):
     def post(self, request):
@@ -83,3 +86,24 @@ class MyClientsView(APIView):
                 {'error': str(e)}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class ClientReportViewSet(viewsets.ModelViewSet):
+    queryset = ClientReport.objects.all()
+    serializer_class = ClientReportSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def perform_create(self, serializer):
+        # Obtener el ID del usuario desde los datos validados
+        user_id = serializer.validated_data.get('uploaded_by')
+        try:
+            # user = CustomUser.objects.get(id=user_id)
+            serializer.save(uploaded_by=user_id)
+        except CustomUser.DoesNotExist:
+            raise ValidationError({"uploaded_by": "Usuario no encontrado"})
+
+    def get_queryset(self):
+        # Filtrar por cliente si se provee el parámetro
+        client_id = self.request.query_params.get('client')
+        if client_id:
+            return ClientReport.objects.filter(client=client_id)
+        return ClientReport.objects.all()

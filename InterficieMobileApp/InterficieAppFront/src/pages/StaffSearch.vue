@@ -30,6 +30,11 @@
                 <div class="client-name">{{ client.name }} {{ client.surname }}</div>
                 <div class="client-email">{{ client.email }}</div>
             </div>
+            <q-btn 
+              class="view-button"
+              label="Ver informes"
+              @click="navigateToReports(client.id)"
+            />
         </div>
         <div v-if="filteredClients.length === 0" class="client-item">
             <div class="client-info">
@@ -47,6 +52,9 @@ import ProfileComponent from 'src/components/ProfileComponent.vue'
 import { ref, onMounted, computed } from 'vue'
 import { api } from 'boot/axios'
 import { useAuthStore } from 'stores/auth'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
 
 const authStore = useAuthStore()
 const clients = ref([])
@@ -70,6 +78,10 @@ onMounted(async () => {
     console.error('Error cargando clientes:', error)
   }
 })
+
+const navigateToReports = (clientId) => {
+  router.push(`/client-reports/${clientId}`)
+}
 
 const filteredClients = computed(() => {
   return clients.value.filter(client => 
@@ -142,8 +154,18 @@ const filteredClients = computed(() => {
   border-radius: 8px;
   overflow: hidden;
 }
+.view-button {
+  margin-left: auto;
+  background-color: #2A5C8D;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
 
 .client-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 15px;
   border-bottom: 1px solid #eee;
   transition: background-color 0.2s ease;

@@ -26,6 +26,11 @@ const routes = [
     path: '/ClientSearch', 
     component: () => import('src/pages/StaffSearch.vue'),
   },
+  { 
+    path: '/client-reports/:clientId',
+    name: 'ClientReports',
+    component: () => import('pages/StaffReview.vue'),
+  }
 ]
 
 export default routes

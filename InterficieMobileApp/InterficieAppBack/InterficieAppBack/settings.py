@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
 
 ENVIRONMENT = config('ENVIRONMENT', default='development')
 
@@ -211,3 +212,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
+
+MEDIA_URL = '/media/'  # URL para acceder a los archivos
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # Donde se guardarán los archivos

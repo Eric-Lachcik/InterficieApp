@@ -17,18 +17,33 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import routers
 from FitCoreBack.serializers import SecureTokenObtainPairSerializer 
-from FitCoreBack.views import RegisterView, TrainerListView, NutritionistListView, UserDetailView, MyClientsView
+from FitCoreBack.views import RegisterView, TrainerListView, NutritionistListView, UserDetailView, MyClientsView, ClientReportViewSet
+
+
+router = routers.DefaultRouter()
+router.register(r'client-reports', ClientReportViewSet, basename='client-reports')
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = SecureTokenObtainPairSerializer
 
 urlpatterns = [
+    # Administración
     path('admin/', admin.site.urls),
+
+    # Autenticación
     path('api/auth/login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/register/', RegisterView.as_view(), name='register'),
+
+    # Usuarios
+    path('api/users/<str:pk>/' , UserDetailView.as_view()),  
+
+    # Staff
     path('api/trainers/', TrainerListView.as_view(), name='trainers-list'),
     path('api/nutritionists/', NutritionistListView.as_view(), name='nutritionists-list'),
-    path('api/users/<str:pk>/' , UserDetailView.as_view()),  
     path('api/my-clients/', MyClientsView.as_view(), name='my-clients'),
+
+    # Informes (usando el router)
+    path('api/', include(router.urls)),
 ]
