@@ -28,15 +28,24 @@ class NutritionistListView(generics.ListAPIView):
     serializer_class = ProfessionalSerializer
     queryset = CustomUser.objects.filter(role='nutricionista')
 
-class UserDetailView(generics.RetrieveAPIView):  # Solo para obtener datos
+class UserDetailView(generics.RetrieveUpdateAPIView):  # Solo para obtener datos
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
-    
+    lookup_field = 'pk'
+
     def get_object(self):
         try:
             return CustomUser.objects.get(pk=self.kwargs['pk'])
         except CustomUser.DoesNotExist:
             raise Http404
+    
+    def perform_update(self, serializer):
+        # Solo permitir actualizar ciertos campos
+        allowed_fields = ['name', 'surname', 'weight', 'muscle_mass']
+        serializer.save(**{
+            k: v for k, v in serializer.validated_data.items()
+            if k in allowed_fields
+        })
         
 class MyClientsView(APIView):
     def get(self, request):
@@ -107,3 +116,14 @@ class ClientReportViewSet(viewsets.ModelViewSet):
         if client_id:
             return ClientReport.objects.filter(client=client_id)
         return ClientReport.objects.all()
+    
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )

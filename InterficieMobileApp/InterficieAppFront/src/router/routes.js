@@ -30,6 +30,16 @@ const routes = [
     path: '/client-reports/:clientId',
     name: 'ClientReports',
     component: () => import('pages/StaffReview.vue'),
+  },
+  { 
+    path: '/client-reports-page',
+    name: 'ClientReportsPage',
+    component: () => import('pages/ClientReportPage.vue'),
+  },
+  { 
+    path: '/client-profile',
+    name: 'ClientProfile',
+    component: () => import('pages/ClientProfile.vue'),
   }
 ]
 

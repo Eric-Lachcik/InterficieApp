@@ -18,7 +18,7 @@
       v-click-outside="closeMenu"
     >
       <q-list class="menu-content">
-        <q-item clickable @click="goToProfile">
+        <q-item v-if="!authStore.user.isStaff" clickable @click="goToProfile">
           <q-item-section avatar>
             <q-icon name="account_circle" />
           </q-item-section>
@@ -67,7 +67,7 @@ const userIconColor = computed(() => {
 })
 
 const goToProfile = () => {
-  router.push('/ProfileView')
+  router.push('/client-profile')
 }
 
 const logout = () => {

@@ -32,24 +32,27 @@
             </q-card>
 
             <!-- Lista de informes -->
-            <q-list bordered class="q-mt-md">
-                <q-item v-for="report in reports" :key="report.id">
-                <q-item-section>
-                    <q-item-label>{{ report.file_name }}</q-item-label>
-                    <q-item-label caption>
+            <q-list bordered class="q-mt-md reports-list">
+              <q-item v-for="report in reports" :key="report.id" class="report-item">
+                <q-item-section class="text-container">
+                  <q-item-label class="text-weight-medium file-name">
+                    {{ report.file_name }}
+                  </q-item-label>
+                  <q-item-label caption class="upload-date">
                     Subido el: {{ formatDate(report.upload_date) }}
-                    </q-item-label>
+                  </q-item-label>
                 </q-item-section>
                 
-                <q-item-section side>
-                    <q-btn 
+                <q-item-section side class="actions-section">
+                  <q-btn 
                     icon="download"
                     @click="downloadReport(report)"
                     color="primary"
                     flat
-                    />
+                    dense
+                  />
                 </q-item-section>
-                </q-item>
+              </q-item>
             </q-list>
         </div>
     </div>
@@ -122,6 +125,7 @@ const downloadReport = (report) => {
   min-height: 100vh;
   background-color: #F0EEF8; /* Nuevo color de fondo */
   padding: 16px;
+  width: 100%;
 }
 
 .profile-container{
@@ -140,5 +144,49 @@ const downloadReport = (report) => {
   margin-top: 16px;
   display: flex;
   justify-content: center;
+}
+/* Estilos generales */
+.report-item {
+  min-height: 64px;
+}
+
+.text-container {
+  min-width: 0; /* Permite que el texto se ajuste */
+  padding-right: 8px;
+}
+
+.file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.upload-date {
+  font-size: 0.75rem;
+}
+
+.actions-section {
+  flex-shrink: 0; /* Previene que se encoja */
+}
+
+/* Versión móvil */
+@media (max-width: 400px) {
+  .report-item {
+    padding: 8px;
+  }
+  
+  .file-name {
+    font-size: 0.9rem;
+  }
+  
+  .upload-date {
+    font-size: 0.7rem;
+  }
+  
+  .q-btn {
+    padding: 6px;
+    min-width: 36px;
+  }
 }
 </style>
