@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password, check_password
 import os
+from dateutil.relativedelta import *
+
 class CustomUser(AbstractUser):
     ROLES = (
         ('cliente', 'Cliente'),
@@ -79,16 +81,74 @@ class CustomUser(AbstractUser):
         return super().check_password(intermediate_hash)
 
 class Appointment(models.Model):
+    CLASS_TYPES = (
+        ('step', 'Step'),
+        ('bodypump', 'Bodypump'),
+        ('spinning', 'Spinning'),
+        ('zumba', 'Zumba'),
+        ('crossfit', 'Crossfit'),
+        ('pilates', 'Pilates'),
+        ('yoga', 'Yoga')
+    )
+    
     TYPES = (
         ('nutricionista', 'Nutricionista'),
         ('entrenador', 'Entrenador'),
         ('clase', 'Clase Dirigida')
     )
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='citas_cliente')
     type = models.CharField(max_length=20, choices=TYPES)
     datetime = models.DateTimeField()
-    professional = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='appointments')
-    class_type = models.CharField(max_length=20, null=True, blank=True)  # Para clases dirigidas (RF1.1)
+    professional = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='citas_profesional'
+    )
+    class_type = models.CharField(
+        max_length=20, 
+        choices=CLASS_TYPES, 
+        null=True, 
+        blank=True,
+        verbose_name='Tipo de clase'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['professional', 'datetime'],
+                name='unique_professional_time'
+            ),
+            models.UniqueConstraint(
+                fields=['class_type', 'datetime'],
+                name='unique_class_time',
+                condition=models.Q(type='clase')
+            )
+        ]
+    
+    def get_week_number(self):
+        return self.datetime.isocalendar()[1]
+    
+    def clean(self):
+        # Validación RF1.2
+        if self.datetime.hour < 9 or self.datetime.hour >= 21:
+            raise ValidationError("Las citas deben ser entre las 9:00 y las 21:00")
+        
+        # Validación de minutos
+        if self.datetime.minute != 0 or self.datetime.second != 0:
+            raise ValidationError("Las citas deben ser en horas en punto (ej: 09:00, 10:00)")
+            
+        # Validación tipo de cita
+        if self.type == 'clase' and not self.class_type:
+            raise ValidationError("Debes seleccionar un tipo de clase")
+            
+        if self.type != 'clase' and self.class_type:
+            raise ValidationError("El tipo de clase solo aplica para clases dirigidas")
+    
+    def __str__(self):
+        return f"Cita de {self.user.name} - {self.get_type_display()} {self.datetime}"
 
 class ClientReport(models.Model):
     client = models.ForeignKey(

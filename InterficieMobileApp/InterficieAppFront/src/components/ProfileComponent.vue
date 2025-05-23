@@ -1,22 +1,13 @@
 <template>
-<div class="user-menu-wrapper">
+  <div class="user-menu-wrapper">
     <!-- Botón del menú -->
-    <q-btn 
-      flat 
-      round 
-      @click.stop="toggleMenu"
-      class="menu-trigger"
-    >
+    <q-btn flat round @click.stop="toggleMenu" class="menu-trigger">
       <q-avatar :class="userIconColor" size="40px">
         <q-icon name="person" />
       </q-avatar>
     </q-btn>
     <!-- Menú desplegable con control manual -->
-    <div 
-      v-show="menuOpen" 
-      class="custom-menu"
-      v-click-outside="closeMenu"
-    >
+    <div v-show="menuOpen" class="custom-menu" v-click-outside="closeMenu">
       <q-list class="menu-content">
         <q-item v-if="!authStore.user.isStaff" clickable @click="goToProfile">
           <q-item-section avatar>
@@ -24,9 +15,9 @@
           </q-item-section>
           <q-item-section>Mi Perfil</q-item-section>
         </q-item>
-        
+
         <q-separator />
-        
+
         <q-item clickable @click="logout">
           <q-item-section avatar>
             <q-icon name="logout" color="negative" />
@@ -35,7 +26,7 @@
         </q-item>
       </q-list>
     </div>
-</div>
+  </div>
 </template>
 
 <script setup>
@@ -77,7 +68,7 @@ const logout = () => {
 // Configuración directiva para detectar clics externos
 const vClickOutside = {
   beforeMount(el, binding) {
-    el.clickOutsideEvent = function(event) {
+    el.clickOutsideEvent = function (event) {
       if (!(el === event.target || el.contains(event.target))) {
         binding.value(event)
       }

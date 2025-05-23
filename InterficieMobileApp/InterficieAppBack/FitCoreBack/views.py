@@ -3,11 +3,13 @@ from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserSerializer, ProfessionalSerializer, ClientReportSerializer
+from .serializers import UserSerializer, ProfessionalSerializer, ClientReportSerializer, AppointmentSerializer
 from rest_framework import generics
-from .models import CustomUser, ClientReport
+from .models import CustomUser, ClientReport, Appointment
 from django.http import Http404
 from rest_framework.exceptions import ValidationError
+from datetime import timedelta
+from django.utils import timezone
 
 class RegisterView(APIView):
     def post(self, request):
@@ -127,3 +129,72 @@ class ClientReportViewSet(viewsets.ModelViewSet):
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
+class AppointmentViewSet(viewsets.ModelViewSet):
+    serializer_class = AppointmentSerializer
+    queryset = Appointment.objects.all()
+    
+    def get_queryset(self):
+        # Obtener citas por usuario desde parámetros (ej: ?user=1)
+        user_id = self.request.query_params.get('user')
+        if user_id:
+            return Appointment.objects.filter(user__id=user_id)
+        return Appointment.objects.all()
+    
+    def perform_create(self, serializer):
+        # Asignar usuario desde los datos enviados
+        user_id = self.request.data.get('user')
+        try:
+            user = CustomUser.objects.get(id=user_id)
+            serializer.save(user=user)
+        except CustomUser.DoesNotExist:
+            pass  # O manejar el error según necesidades
+
+class AvailableProfessionalsView(APIView):    
+    def get(self, request):
+        role = request.query_params.get('role')
+        if not role:
+            return Response(
+                {"error": "Parámetro 'role' requerido"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        professionals = CustomUser.objects.filter(role=role)
+        serializer = ProfessionalSerializer(professionals, many=True)
+        return Response(serializer.data)
+    
+class ProfessionalAvailabilityView(APIView):
+    def get(self, request, professional_id):
+        now = timezone.localtime()
+        next_day = now + timedelta(days=1)
+        
+        # Horario base del día siguiente (9:00 a 21:00)
+        base_date = next_day.replace(
+            hour=9, minute=0, second=0, microsecond=0
+        )
+        end_date = base_date.replace(hour=20, minute=0)  # Nueva hora límite
+        # Generar slots válidos (24h de antelación)
+        valid_slots = []
+        current_slot = base_date
+        
+         # Generar hasta las 20:00 inclusive
+        while current_slot <= end_date:
+            # Verificar antelación mínima de 24h
+            if current_slot > now + timedelta(hours=24):
+                valid_slots.append(current_slot)
+            current_slot += timedelta(hours=1)
+            
+        # Filtrar citas existentes
+        existing_appointments = Appointment.objects.filter(
+            professional=professional_id,
+            datetime__date=base_date.date()
+        ).values_list('datetime', flat=True)
+        
+        available_slots = [
+            slot for slot in valid_slots
+            if slot not in existing_appointments
+        ]
+        
+        return Response({
+            'available_slots': available_slots
+        })

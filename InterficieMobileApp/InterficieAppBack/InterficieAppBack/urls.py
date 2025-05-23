@@ -19,12 +19,12 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import routers
 from FitCoreBack.serializers import SecureTokenObtainPairSerializer 
-from FitCoreBack.views import RegisterView, TrainerListView, NutritionistListView, UserDetailView, MyClientsView, ClientReportViewSet
+from FitCoreBack.views import RegisterView, TrainerListView, NutritionistListView, UserDetailView, MyClientsView, ClientReportViewSet, AppointmentViewSet, AvailableProfessionalsView, ProfessionalAvailabilityView
 
 
 router = routers.DefaultRouter()
 router.register(r'client-reports', ClientReportViewSet, basename='client-reports')
-
+router.register(r'appointments', AppointmentViewSet, basename='appointments')
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = SecureTokenObtainPairSerializer
 
@@ -46,4 +46,8 @@ urlpatterns = [
 
     # Informes (usando el router)
     path('api/', include(router.urls)),
+
+    # Citas
+    path('api/professionals/', AvailableProfessionalsView.as_view()),
+    path('api/availability/<int:professional_id>/', ProfessionalAvailabilityView.as_view()),
 ]

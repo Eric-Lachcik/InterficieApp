@@ -17,6 +17,7 @@
           label="Citas"
           color="primary"
           class="q-my-md"
+          @click="$router.push('/client-citas')"
         />
       </div>
     </div>

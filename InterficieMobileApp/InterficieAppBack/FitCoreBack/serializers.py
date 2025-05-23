@@ -4,6 +4,8 @@ from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 from .models import CustomUser, Appointment , ClientReport
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from dateutil.relativedelta import *
 
 class UserSerializer(serializers.ModelSerializer):
     entrenador = serializers.PrimaryKeyRelatedField(
@@ -55,10 +57,112 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
     
         return user
+    
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = '__all__'
+        read_only_fields = ('professional',)  # Hacerlo solo de lectura
+    
+    def validate_datetime(self, value):
+        # RF1.2 Validación de horario
+        if value.hour < 9 or value.hour >= 20:
+            raise serializers.ValidationError("Horario válido: 9:00 - 20:00")
+        
+        # Validar que sea en hora en punto
+        if value.minute != 0 or value.second != 0:
+            raise serializers.ValidationError("Debe ser una hora en punto exacta")
+            
+        # No permitir citas en el pasado
+        if value < timezone.now():
+            raise serializers.ValidationError("No puedes agendar citas en el pasado")
+            
+        return value
+    
+    def validate(self, data):
+        user = data['user']
+        appointment_type = data['type']
+        datetime = data['datetime']
+        
+        # Validación de profesional asignado (existente)
+        if appointment_type == 'nutricionista':
+            professional = user.nutricionista
+        elif appointment_type == 'entrenador':
+            professional = user.entrenador
+        else:
+            professional = None
+            
+        if professional is None and appointment_type != 'clase':
+            raise serializers.ValidationError(
+                f"No tienes un {appointment_type} asignado"
+            )
+            
+        data['professional'] = professional
+        
+        # Nueva validación de disponibilidad
+        if professional:  # Solo aplica para nutricionista/entrenador
+            conflicting_appointments = Appointment.objects.filter(
+                professional=professional,
+                datetime=datetime
+            )
+            
+            # Excluir la propia cita en caso de actualización
+            if self.instance:
+                conflicting_appointments = conflicting_appointments.exclude(pk=self.instance.pk)
+                
+            if conflicting_appointments.exists():
+                raise serializers.ValidationError(
+                    "Este profesional ya tiene una cita programada en este horario"
+                )
+        
+        # Validación adicional para clases
+        if appointment_type == 'clase':
+            # Verificar disponibilidad de la clase
+            existing_class = Appointment.objects.filter(
+                datetime=datetime,
+                class_type=data['class_type']
+            ).exists()
+            
+            if existing_class:
+                raise serializers.ValidationError(
+                    "Esta clase ya tiene participantes registrados en este horario"
+                )
+        # Validación de antelación para clases
+        if appointment_type == 'clase':
+            min_time = timezone.now() + relativedelta(hours=24)
+            if datetime < min_time:
+                raise serializers.ValidationError(
+                    "Las clases deben reservarse con al menos 24h de antelación"
+                )
+        
+        # Validación de límites semanales
+        if appointment_type in ['nutricionista', 'entrenador']:
+            week_number = datetime.isocalendar()[1]
+            existing_count = Appointment.objects.filter(
+                user=user,
+                type=appointment_type,
+                datetime__week=week_number,
+                datetime__year=datetime.year
+            ).count()
+            
+            limit = 1 if appointment_type == 'nutricionista' else 2
+            if existing_count >= limit:
+                raise serializers.ValidationError(
+                    f"Límite semanal alcanzado ({limit} citas de {appointment_type})"
+                )
+        
+        # Validación de capacidad de clases
+        if appointment_type == 'clase':
+            class_count = Appointment.objects.filter(
+                class_type=data['class_type'],
+                datetime=datetime
+            ).count()
+            if class_count >= 20:
+                raise serializers.ValidationError(
+                    "Clase llena (máximo 20 participantes)"
+                )
+            
+        return super().validate(data)
 
 class SecureTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -88,7 +192,7 @@ class SecureTokenObtainPairSerializer(TokenObtainPairSerializer):
 class ProfessionalSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'name', 'surname', 'email', 'phone']
+        fields = ['id', 'name', 'surname', 'email', 'phone', 'role']
 
 
 class ClientReportSerializer(serializers.ModelSerializer):

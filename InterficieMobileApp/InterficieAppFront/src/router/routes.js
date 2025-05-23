@@ -40,6 +40,16 @@ const routes = [
     path: '/client-profile',
     name: 'ClientProfile',
     component: () => import('pages/ClientProfile.vue'),
+  },
+  { 
+    path: '/client-citas',
+    name: 'ClientCitas',
+    component: () => import('pages/ClientCitas.vue'),
+  },
+  { 
+    path: '/client-register-cita',
+    name: 'ClientRegisterCita',
+    component: () => import('pages/ClientRegisterCita.vue'),
   }
 ]
 
