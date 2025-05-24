@@ -12,7 +12,7 @@
 
       <!-- Botón Nutricaders -->
       <router-link 
-        to="/nutricion" 
+        to="/notifications" 
         class="nav-item"
         active-class="active"
       >

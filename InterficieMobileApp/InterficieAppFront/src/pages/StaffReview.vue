@@ -65,7 +65,9 @@ import { ref, onMounted } from 'vue'
 import { useRoute} from 'vue-router'
 import { api } from 'boot/axios'
 import { useAuthStore } from 'stores/auth'
+import { useNotificationsStore } from 'stores/notification';
 
+const notificationsStore = useNotificationsStore();
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -103,6 +105,7 @@ const uploadFile = async () => {
     })
     reports.value.push(response.data)
     newReport.value = null
+    await notificationsStore.fetchNotifications(authStore.user.id);
   } catch (error) {
     console.error('Error subiendo archivo:', error)
   }

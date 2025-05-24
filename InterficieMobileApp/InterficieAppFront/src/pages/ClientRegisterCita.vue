@@ -68,7 +68,9 @@ import ProfileComponent from 'src/components/ProfileComponent.vue'
 import { ref, watch } from 'vue'
 import { api } from 'boot/axios'
 import { useAuthStore } from 'stores/auth'
+import { useNotificationsStore } from 'stores/notification';
 
+const notificationsStore = useNotificationsStore();
 const authStore = useAuthStore()
 console.log('user', authStore.userDetails)
 // Versión reactiva del nombre del profesional
@@ -128,10 +130,13 @@ const createAppointment = async () => {
       user: authStore.user.id,
       datetime: new Date(form.value.datetime).toISOString()
     }
-
+    console.log('Payload para hora2:', new Date(form.value.datetime))
+    console.log('Payload para hora3:', form.value.datetime)
+    console.log('Payload para crear cita:', payload)
     await api.post('/api/appointments/', payload)
     alert('Cita creada exitosamente!')
-    window.location.href = '/client-citas'
+    await notificationsStore.fetchNotifications(authStore.user.id);
+    // window.location.href = '/client-citas'
   } catch (error) {
     alert(error.response?.data?.detail || 'Error creando cita')
   }

@@ -26,7 +26,7 @@
           label="Notificaciones"
           color="primary"
           class="q-my-md"
-          @click="$router.push('/StaffNotifications')"
+          @click="$router.push('/notifications')"
         />
       </div>
     </div>

@@ -149,6 +149,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         try:
             user = CustomUser.objects.get(id=user_id)
             serializer.save(user=user)
+            super().perform_create(serializer)
         except CustomUser.DoesNotExist:
             pass  # O manejar el error según necesidades
 
