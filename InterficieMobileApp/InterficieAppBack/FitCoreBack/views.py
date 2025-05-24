@@ -3,13 +3,15 @@ from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserSerializer, ProfessionalSerializer, ClientReportSerializer, AppointmentSerializer
+from .serializers import UserSerializer, ProfessionalSerializer, ClientReportSerializer, AppointmentSerializer, NotificationSerializer
 from rest_framework import generics
-from .models import CustomUser, ClientReport, Appointment
+from .models import CustomUser, ClientReport, Appointment, Notification
 from django.http import Http404
 from rest_framework.exceptions import ValidationError
 from datetime import timedelta
 from django.utils import timezone
+from rest_framework.decorators import action
+from .tasks import process_class_reservation
 
 class RegisterView(APIView):
     def post(self, request):
@@ -198,3 +200,37 @@ class ProfessionalAvailabilityView(APIView):
         return Response({
             'available_slots': available_slots
         })
+    
+class NotificationViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationSerializer
+    queryset = Notification.objects.all()
+    
+    def get_queryset(self):
+        user_id = self.request.META.get('HTTP_X_USER_ID')
+        if not user_id:
+            return Notification.objects.none()
+            
+        return Notification.objects.filter(user__id=user_id).order_by('-created_at')
+
+    @action(detail=True, methods=['patch'])
+    def mark_as_read(self, request, pk=None):
+        notification = self.get_object()
+        notification.read = True
+        notification.save()
+        return Response({'status': 'marked as read'})
+
+    @action(detail=False, methods=['post'])
+    def mark_all_read(self, request):
+        user_id = request.META.get('HTTP_X_USER_ID')
+        Notification.objects.filter(user__id=user_id).update(read=True)
+        return Response({'status': 'all marked as read'})
+
+class MassReservationView(APIView):
+    def post(self, request):
+        data = request.data
+        task = process_class_reservation.delay(
+            data['class_type'],
+            data['datetime'],
+            data['user_ids']
+        )
+        return Response({'task_id': task.id}, status=202)

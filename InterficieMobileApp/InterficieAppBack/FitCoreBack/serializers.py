@@ -2,7 +2,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
-from .models import CustomUser, Appointment , ClientReport
+from .models import CustomUser, Appointment , ClientReport, Notification
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from dateutil.relativedelta import *
@@ -209,3 +209,9 @@ class ClientReportSerializer(serializers.ModelSerializer):
 
     def get_file_name(self, obj):
         return obj.filename()
+    
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'
+        read_only_fields = ('user', 'created_at', 'read')

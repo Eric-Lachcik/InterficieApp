@@ -166,3 +166,21 @@ class ClientReport(models.Model):
 
     def filename(self):
         return os.path.basename(self.file.name)
+    
+class Notification(models.Model):
+    NOTIFICATION_TYPES = (
+        ('info', 'Información'),
+        ('appointment', 'Cita'),
+        ('report', 'Informe'),
+        ('class', 'Clase')
+    )
+    
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    message = models.TextField()
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+    related_object_id = models.PositiveIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Notificación para {self.user.username} - {self.get_notification_type_display()}"

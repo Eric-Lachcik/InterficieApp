@@ -50,6 +50,11 @@ const routes = [
     path: '/client-register-cita',
     name: 'ClientRegisterCita',
     component: () => import('pages/ClientRegisterCita.vue'),
+  },
+  { 
+    path: '/notifications',
+    name: 'NotificationsPage',
+    component: () => import('pages/NotificationsPage.vue'),
   }
 ]
 
