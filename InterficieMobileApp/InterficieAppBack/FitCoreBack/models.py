@@ -76,7 +76,7 @@ class CustomUser(AbstractUser):
         return hashlib.sha256(password.encode()).hexdigest()
 
     def check_password(self, raw_password):
-    # raw_password debe ser el texto plano del cliente
+        # raw_password debe ser el texto plano del cliente
         intermediate_hash = self._sha256_hash(raw_password)
         return super().check_password(intermediate_hash)
 

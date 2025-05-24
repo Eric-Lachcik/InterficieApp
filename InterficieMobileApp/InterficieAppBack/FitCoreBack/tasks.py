@@ -8,7 +8,6 @@ from django.db import models
 @transaction.atomic
 def process_class_reservation(class_type, datetime, user_ids):
     
-    # Verificar disponibilidad con bloqueo atómico
     appointments = Appointment.objects.select_for_update().filter(
         class_type=class_type,
         datetime=datetime
@@ -17,7 +16,6 @@ def process_class_reservation(class_type, datetime, user_ids):
     if appointments.count() >= 20:
         return {'status': 'error', 'message': 'Clase llena'}
     
-    # Crear reservas usando bulk_create para eficiencia
     new_appointments = [
         Appointment(
             user_id=user_id,

@@ -6,7 +6,7 @@ app = Celery('InterficieAppBack')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
-# Configuración para usar Redis como broker
+# Configuración para usar Redis como broker/mensajero
 app.conf.update(
     broker_url='redis://localhost:6379/0',
     result_backend='redis://localhost:6379/0',
