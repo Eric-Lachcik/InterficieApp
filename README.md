@@ -11,27 +11,4 @@ Aplicación móvil para gestión de gimnasios con Django REST (Backend) y Quasar
 
 ## 🚀 Configuración Inicial
 
-### 1. Clonar repositorio
-```bash
-git clone https://github.com/tu-usuario/gym-management-app.git #Nombres por Cambiar
-cd gym-management-app
-
-# Entrar en directorio backend
-cd backend
-
-# Instalar dependencias (Usar poetry o pip)
-poetry install  # Opción recomendada
-# ó
-pip install -r requirements.txt
-
-# Configurar variables de entorno
-cp .env.example .env
-
-# Entrar en directorio frontend
-cd ../frontend
-
-# Instalar dependencias
-npm install
-
-# Configurar variables de entorno
-cp .env.example .env
+Descargar docker y desde una terminal de VSCODE ejecutar esto antes de usar el proyecto con celery "docker run -d --name redis-broker -p 6379:6379 redis:latest"
