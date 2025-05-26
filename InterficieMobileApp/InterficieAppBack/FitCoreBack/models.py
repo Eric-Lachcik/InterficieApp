@@ -184,3 +184,18 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notificación para {self.user.username} - {self.get_notification_type_display()}"
+    
+class EvolutionData(models.Model):
+    user = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE,
+        related_name='evolution_metrics'
+    )
+    date = models.DateField()  # Fecha de la medición
+    weight = models.FloatField(help_text="Peso en kilogramos")  
+    muscle_mass = models.FloatField(help_text="Masa muscular en porcentaje")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'date']  # Evita duplicados por fecha
+        ordering = ['-date']

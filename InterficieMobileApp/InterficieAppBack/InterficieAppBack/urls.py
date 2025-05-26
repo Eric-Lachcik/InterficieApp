@@ -19,7 +19,7 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import routers
 from FitCoreBack.serializers import SecureTokenObtainPairSerializer 
-from FitCoreBack.views import RegisterView, TrainerListView, NutritionistListView, UserDetailView, MyClientsView, ClientReportViewSet, AppointmentViewSet, AvailableProfessionalsView, ProfessionalAvailabilityView, NotificationViewSet
+from FitCoreBack.views import RegisterView, TrainerListView, NutritionistListView, UserDetailView, MyClientsView, ClientReportViewSet, AppointmentViewSet, AvailableProfessionalsView, ProfessionalAvailabilityView, NotificationViewSet, EvolutionCSVUploadView, EvolutionDataView
 
 
 router = routers.DefaultRouter()
@@ -55,4 +55,8 @@ urlpatterns = [
     path('api/notifications/', NotificationViewSet.as_view({'get': 'list'}), name='notifications-list'),
     path('api/notifications/<int:pk>/mark-read/', NotificationViewSet.as_view({'patch': 'mark_as_read'}), name='mark-notification-read'),
     path('api/notifications/mark-all-read/', NotificationViewSet.as_view({'post': 'mark_all_read'}), name='mark-all-read'),
+
+    # Graficos
+    path('api/evolution/<int:user_id>/', EvolutionDataView.as_view(), name='evolution-data'),
+    path('api/evolution/upload/', EvolutionCSVUploadView.as_view(), name='evolution-upload'),
 ]

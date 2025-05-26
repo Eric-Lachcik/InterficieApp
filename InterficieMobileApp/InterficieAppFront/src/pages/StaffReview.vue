@@ -28,6 +28,12 @@
                     accept=".pdf,.csv,.xlsx"
                     @update:model-value="uploadFile"
                 />
+                <q-file
+                  v-model="newReport"
+                  label="Subir CSV de evolución"
+                  accept=".csv"
+                  @update:model-value="uploadEvolutionCSV"
+                />
                 </q-card-section>
             </q-card>
 
@@ -108,6 +114,23 @@ const uploadFile = async () => {
     await notificationsStore.fetchNotifications(authStore.user.id);
   } catch (error) {
     console.error('Error subiendo archivo:', error)
+  }
+}
+
+// Nuevo método para CSVs evolutivos
+const uploadEvolutionCSV = async () => {
+  const formData = new FormData()
+  formData.append('file', newReport.value)
+  formData.append('user_id', route.params.clientId)  // ID del cliente
+  
+  try {
+    await api.post('/api/evolution/upload/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    // Actualizar gráficos
+    // await fetchEvolutionData()
+  } catch (error) {
+    console.error('Error subiendo CSV evolutivo:', error)
   }
 }
 

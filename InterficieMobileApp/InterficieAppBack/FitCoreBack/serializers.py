@@ -2,10 +2,11 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
-from .models import CustomUser, Appointment , ClientReport, Notification
+from .models import CustomUser, Appointment , ClientReport, Notification, EvolutionData
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from dateutil.relativedelta import *
+
 
 class UserSerializer(serializers.ModelSerializer):
     entrenador = serializers.PrimaryKeyRelatedField(
@@ -203,3 +204,9 @@ class NotificationSerializer(serializers.ModelSerializer):
         model = Notification
         fields = '__all__'
         read_only_fields = ('user', 'created_at', 'read')
+
+class EvolutionDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EvolutionData
+        fields = ['date', 'weight', 'muscle_mass']
+

@@ -3,15 +3,17 @@ from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserSerializer, ProfessionalSerializer, ClientReportSerializer, AppointmentSerializer, NotificationSerializer
+from .serializers import UserSerializer, ProfessionalSerializer, ClientReportSerializer, AppointmentSerializer, NotificationSerializer, EvolutionDataSerializer
 from rest_framework import generics
-from .models import CustomUser, ClientReport, Appointment, Notification
+from .models import CustomUser, ClientReport, Appointment, Notification, EvolutionData
 from django.http import Http404
 from rest_framework.exceptions import ValidationError
 from datetime import timedelta
 from django.utils import timezone
 from rest_framework.decorators import action
 from .tasks import process_class_reservation
+import pandas as pd
+from rest_framework.exceptions import NotFound
 
 class RegisterView(APIView):
     def post(self, request):
@@ -235,3 +237,44 @@ class MassReservationView(APIView):
             data['user_ids']
         )
         return Response({'task_id': task.id}, status=202)
+    
+class EvolutionDataView(generics.ListAPIView):
+    serializer_class = EvolutionDataSerializer
+    
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        return EvolutionData.objects.filter(user_id=user_id)
+
+class EvolutionCSVUploadView(APIView):
+    parser_classes = [MultiPartParser]
+    
+    def post(self, request):
+        csv_file = request.FILES.get('file')
+        user_id = request.data.get('user_id')
+        
+        try:
+            # Verificar que el usuario exista
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            raise NotFound("Usuario no encontrado")
+            
+        try:
+            df = pd.read_csv(csv_file)
+            for _, row in df.iterrows():
+                EvolutionData.objects.update_or_create(
+                    user=user,
+                    date=row['date'],
+                    defaults={
+                        'weight': row['weight'],
+                        'muscle_mass': row['muscle_mass'],
+                    }
+                )
+            return Response(
+                {"message": f"{len(df)} registros procesados"},
+                status=201
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"Error procesando CSV: {str(e)}"},
+                status=400
+            )
