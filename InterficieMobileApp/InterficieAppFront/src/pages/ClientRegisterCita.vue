@@ -136,7 +136,7 @@ const createAppointment = async () => {
     await api.post('/api/appointments/', payload)
     alert('Cita creada exitosamente!')
     await notificationsStore.fetchNotifications(authStore.user.id);
-    // window.location.href = '/client-citas'
+    window.location.href = '/client-citas'
   } catch (error) {
     alert(error.response?.data?.detail || 'Error creando cita')
   }

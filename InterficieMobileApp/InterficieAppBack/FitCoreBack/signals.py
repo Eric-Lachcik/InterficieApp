@@ -20,11 +20,17 @@ def create_appointment_notification(sender, instance, created, **kwargs):
         # Notificar al profesional
         if instance.professional:
             # Añadir 2 horas manualmente
-            local_time = instance.datetime + relativedelta(hours=2)
-            message = f"Nueva cita con {instance.user.name} el {local_time.strftime('%d/%m a las %H:%M')}"
+            # local_time = instance.datetime + relativedelta(hours=2)
+            # message = f"Nueva cita con {instance.user.name} el {local_time.strftime('%d/%m a las %H:%M')}"
+            # Notification.objects.create(
+            #     user=instance.professional,
+            #     message=message,
+            #     notification_type='appointment',
+            #     related_object_id=instance.id
+            # )
             Notification.objects.create(
                 user=instance.professional,
-                message=message,
+                message=f"Nueva cita con {instance.user.name} el {instance.datetime.strftime('%d/%m a las %H:%M')}",
                 notification_type='appointment',
                 related_object_id=instance.id
             )

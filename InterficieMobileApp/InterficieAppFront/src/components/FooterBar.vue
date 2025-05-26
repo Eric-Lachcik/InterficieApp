@@ -21,7 +21,7 @@
 
       <!-- Botón Informes -->
       <router-link 
-        to="/informes" 
+        to="/client-charts" 
         class="nav-item"
         active-class="active"
       >

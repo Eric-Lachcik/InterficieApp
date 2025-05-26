@@ -115,18 +115,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
                     "Este profesional ya tiene una cita programada en este horario"
                 )
         
-        # Validación adicional para clases
-        if appointment_type == 'clase':
-            # Verificar disponibilidad de la clase
-            existing_class = Appointment.objects.filter(
-                datetime=datetime,
-                class_type=data['class_type']
-            ).exists()
-            
-            if existing_class:
-                raise serializers.ValidationError(
-                    "Esta clase ya tiene participantes registrados en este horario"
-                )
         # Validación de antelación para clases
         if appointment_type == 'clase':
             min_time = timezone.now() + relativedelta(hours=24)

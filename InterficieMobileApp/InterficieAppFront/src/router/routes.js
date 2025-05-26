@@ -55,6 +55,12 @@ const routes = [
     path: '/notifications',
     name: 'NotificationsPage',
     component: () => import('pages/NotificationPage.vue'),
+  },
+  { 
+    path: '/client-charts',
+    name: 'ClientCharts',
+    component: () => import('pages/ClientCharts.vue'),
+    
   }
 ]
 
